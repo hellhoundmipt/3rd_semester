@@ -9,8 +9,6 @@
 #include <sys/stat.h>
 #include "functions.h"
 
-char *helpMessage = "Keys:\n-h or --help\t\t\tshow help\n-k or --key [keyfile]\t\tset keyfile for shared memory\n-i or --input [inputfile]\tset input file\n-g or --get [shmemory]\t\tread from shared memory\n-r or --remove [shmemory]\tremove shared memory\n-cheese\t\t\t\t...\n";
-char *restrictMessage = "Do NOT delete SHMEM_INFO, it will be removed automatically when you clear shared memory with -r or --remove key\n";
 
 struct FilesInfo
 {
@@ -18,16 +16,78 @@ struct FilesInfo
   char *inputFile;
 };
 
+struct Base
+{
+  int numKeys;
+  char **key;
+  int *optionsNum;
+  int instr;
+};
+
+struct ParsRes
+{
+  int instr;
+  char *options;
+};
+
 
 
 
 int main (int argsCount, char **args)
 {
-  ParsArgs(int argsCount, char **args);
+  struct Base argsMain[5];
+
+  SetArgs(*argsMain);
+
+  ParsArgs(argsCount, **args, argsMain);
 }
 
 
+void *SetArgs(struct Base *argsMain)
+{
+  argsMain[0]->numKeys = 1;
+  argsMain[0]->*key = (char*)calloc(numKeys, sizeof(char));
+  argsMain[0]->*key[0] = (char*)calloc(3, sizeof(char));
+  argsMain[0]->*key[0] = "-h";
+  argsMain[0]->*optionsNum = (int*)calloc(1, sizeof(int));
+  argsMain[0]->optionsNum[0] = 0;
+  argsMain[0]->instr = 0;
 
+  argsMain[0]->numKeys = 1;
+  argsMain[0]->*key = (char*)calloc(numKeys, sizeof(char));
+  argsMain[0]->*key[0] = (char*)calloc(8, sizeof(char));
+  argsMain[0]->*key[0] = "-cheese";
+  argsMain[0]->*optionsNum = (int*)calloc(1, sizeof(int));
+  argsMain[0]->optionsNum[0] = 0;
+  argsMain[0]->instr = 1;
+
+  argsMain[0]->numKeys = 2;
+  argsMain[0]->*key = (char*)calloc(numKeys, sizeof(char));
+  argsMain[0]->*key[0] = (char*)calloc(3, sizeof(char));
+  argsMain[0]->*key[0] = "-i";
+  argsMain[0]->*key[1] = (char*)calloc(3, sizeof(char));
+  argsMain[0]->*key[1] = "-k";
+  argsMain[0]->*optionsNum = (int*)calloc(2, sizeof(int));
+  argsMain[0]->optionsNum[0] = 1;
+  argsMain[0]->optionsNum[1] = 1;
+  argsMain[0]->instr = 2;
+
+  argsMain[0]->numKeys = 1;
+  argsMain[0]->*key = (char*)calloc(numKeys, sizeof(char));
+  argsMain[0]->*key[0] = (char*)calloc(3, sizeof(char));
+  argsMain[0]->*key[0] = "-g";
+  argsMain[0]->*optionsNum = (int*)calloc(1, sizeof(int));
+  argsMain[0]->optionsNum[0] = 1;
+  argsMain[0]->instr = 3;
+
+  argsMain[0]->numKeys = 1;
+  argsMain[0]->*key = (char*)calloc(numKeys, sizeof(char));
+  argsMain[0]->*key[0] = (char*)calloc(3, sizeof(char));
+  argsMain[0]->*key[0] = "-r";
+  argsMain[0]->*optionsNum = (int*)calloc(1, sizeof(int));
+  argsMain[0]->optionsNum[0] = 1;
+  argsMain[0]->instr = 4;
+}
 
 
 int FileToShMem(struct FilesInfo workingFiles)
