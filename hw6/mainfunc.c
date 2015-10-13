@@ -5,12 +5,13 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <time.h>
-#define threadsCount 4
+#define threadsCount 2
 
 struct Main2ThrMain
 {
   int shmId;
   int semId;
+  struct drand48_data *buffer;
 };
 
 void Add(int semId, int value)
@@ -33,13 +34,14 @@ void Sub(int semId, int value)
 
 void *ThreadMain(void *args)
 {
+  printf("t1\n");
   struct Main2ThrMain transmData = *(struct Main2ThrMain*)args;
   int *data = shmat(transmData.shmId, 0, 0);
-  int i;
+
   double x, y;
-  int yesCounter;
-  int noCounter;
-  int exTime = 20;
+  int i, yesCounter, noCounter, exTime = 40;
+
+  printf("t2\n");
   clock_t start;
   start = clock() / CLOCKS_PER_SEC;
 
@@ -49,8 +51,10 @@ void *ThreadMain(void *args)
     noCounter = 0;
     for(i = 0; i < 1000; i++)
     {
-      x = -1.0f + 2.0f * (float)rand()/((float)RAND_MAX/1);
-      y = -1.0f + 2.0f * (float)rand()/((float)RAND_MAX/1);
+      drand48_r(transmData.buffer, &x);
+      drand48_r(transmData.buffer, &y);
+      x = -1.0f + 2.0f * x;
+      y = -1.0f + 2.0f * y;
       if (x*x + y*y <= 1)
         yesCounter++;
       else
@@ -68,6 +72,11 @@ int main()
   int yesCounter, noCounter, i;
   struct Main2ThrMain transmData;
 
+  long int seedval;
+  printf("1\n");
+  srand48_r(seedval, transmData.buffer);
+  printf("2\n");
+
   key_t key = ftok("key", 0);
   printf("key = %d\n", key);
   transmData.semId = semget(key, 1, IPC_CREAT | 0666);
@@ -80,11 +89,13 @@ int main()
   data[0] = 0;
   data[1] = 0;
 
+  printf("3\n");
   pthread_t threadIndex[threadsCount];
   for(i = 0; i < threadsCount; i++)
   {
     threadIndex[i] = i;
     pthread_create(&(threadIndex[i]), 0, ThreadMain, &transmData);
+    printf("4\n");
   }
   for(i = 0; i < threadsCount; i++)
   {

@@ -10,14 +10,16 @@ int main()
 {
   double x, y;
   int yesCounter = 0, noCounter = 0;
-  int exTime = 10;
+  int exTime = 20;
   clock_t start;
   start = clock() / CLOCKS_PER_SEC;
 
   while((clock() / CLOCKS_PER_SEC) - start < exTime)
   {
-    x = -1.0f + 2.0f * (float)rand()/((float)RAND_MAX/1);
-    y = -1.0f + 2.0f * (float)rand()/((float)RAND_MAX/1);
+    //x = -1.0f + 2.0f * (float)rand()/((float)RAND_MAX/1);
+    //y = -1.0f + 2.0f * (float)rand()/((float)RAND_MAX/1);
+    x = -1.0f + 2.0f * drand48();
+    y = -1.0f + 2.0f * drand48();
     if (x*x + y*y <= 1)
       yesCounter++;
     else
