@@ -5,7 +5,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <time.h>
-#define threadsCount 10
+#define threadsCount 4
 
 struct Main2ThrMain
 {
@@ -33,14 +33,17 @@ void Sub(int semId, int value)
 
 void *ThreadMain(void *args)
 {
-  printf("2\n");
   struct Main2ThrMain transmData = *(struct Main2ThrMain*)args;
   int *data = shmat(transmData.shmId, 0, 0);
   int i;
   double x, y;
   int yesCounter;
   int noCounter;
-  while(1 < 2)
+  int exTime = 20;
+  clock_t start;
+  start = clock() / CLOCKS_PER_SEC;
+
+  while((clock() / CLOCKS_PER_SEC) - start < exTime)
   {
     yesCounter = 0;
     noCounter = 0;
@@ -71,21 +74,17 @@ int main()
   printf("semId = %d\n", transmData.semId);
   transmData.shmId = shmget(key, 2*sizeof(double), IPC_CREAT | 0777);
   printf("shmId = %d\n", transmData.shmId);
+  Add(transmData.semId, 1);
 
   int *data = shmat(transmData.shmId, 0, 0);
   data[0] = 0;
   data[1] = 0;
-  printf("1\n");
-  printf("data[0]= %d\n", data[0]);
-  printf("data[1] = %d\n", data[1]);
 
   pthread_t threadIndex[threadsCount];
-  for(i; i < threadsCount; i++)
+  for(i = 0; i < threadsCount; i++)
   {
-    printf("3\n");
     threadIndex[i] = i;
     pthread_create(&(threadIndex[i]), 0, ThreadMain, &transmData);
-    printf("4\n");
   }
   for(i = 0; i < threadsCount; i++)
   {
@@ -96,5 +95,9 @@ int main()
   printf("%d\t%d\n", yesCounter, noCounter);
   double pi = 4 * (float)yesCounter / (float)(yesCounter + noCounter);
   printf("Pi = %f\n", pi);
+
+  semctl(transmData.semId, IPC_RMID, 0);
+  shmctl(transmData.shmId, IPC_RMID, 0);
+
   return 0;
 }
