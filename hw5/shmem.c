@@ -36,10 +36,11 @@ struct ParsRes
 int main (int argsCount, char **args)
 {
   struct Base argsMain[5];
+  int argsMainCount = 5;
 
   SetArgs(*argsMain);
 
-  ParsArgs(argsCount, **args, argsMain);
+  ParsArgs(argsCount, **args, argsMain, argsMainCount);
 }
 
 
