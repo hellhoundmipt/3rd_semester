@@ -1,0 +1,43 @@
+1 thread pi = 3.141353	yesCounter = 37032421	noCounter = 10122314	expected time = 20
+
+1 thread pi = 3.141242	yesCounter = 39481091	noCounter = 10793402	expected time = 20
+
+1 thread pi = 3.141243	yesCounter = 39401756	noCounter = 10771699	expected time = 20
+
+1 thread pi = 3.141259	yesCounter = 39215394	noCounter = 10720502	expected time = 20
+
+2 threads pi = 3.141662	yesCounter = 421222209	noCounter = 115082791	expected time = 20 real time ~ 21
+2 threads pi = 3.141682	yesCounter = 421567357	noCounter = 115173643	expected time = 20 real time ~ 22
+2 threads pi = 3.141675	yesCounter = 424492167	noCounter = 115973833	expected time = 20 real time ~ 22
+2 threads pi = 3.141705	yesCounter = 389537695	noCounter = 106419305	expected time = 20 real time ~ 22
+2 threads pi = 3.141712	yesCounter = 383392568	noCounter = 104739432	expected time = 20 real time ~ 22
+
+4 threads pi = 3.141694	yesCounter = 350082934	noCounter = 95642066	expected time = 20 real time ~ 29
+4 threads pi = 3.141691	yesCounter = 368880060	noCounter = 100777940	expected time = 20 real time ~ 29
+4 threads pi = 3.141697	yesCounter = 370603960	noCounter = 101248040	expected time = 20 real time ~ 28
+4 threads pi = 3.141686	yesCounter = 370088307	noCounter = 101108693	expected time = 20 real time ~ 29
+
+Sync after every 1000 points, best results - 2 threads (on 2 core processor)
+
+Now sync after every 10000 points
+2 threads pi = 3.141658	yesCounter = 436132827	noCounter = 119157173	expected time = 20 real time ~ 22
+
+2 threads pi = 3.141650	yesCounter = 437404108	noCounter = 119505892	expected time = 20 real time ~ 22
+
+No difference
+2 threads pi = -5.261133	yesCounter = 2112051896	noCounter = 577138104	expected time = 100 real time ~ 148
+
+Float overflow - initializing long float
+2 threads pi = 3.141596	yesCounter = 1094343558	noCounter = 299016442	expected time = 50
+
+2 threads pi = 3.141587	yesCounter = 1530651916	noCounter = 418238084	expected time = 70
+
+-owerflow  ........................................2 threads pi = 5.577343	yesCounter = -2110588345	noCounter = 596901049	expected time = 100
+
+-0werflow  ....................................... 2 threads pi = -3.398835	yesCounter = 1752955373	noCounter = 479004627	expected time = 90
+2 threads pi = 3.141577	yesCounter = 1416890695	noCounter = 387159305	expected time = 70
+
+2 threads pi = 3.141591	yesCounter = 1263799065	noCounter = 345320935	expected time = 70
+
+2 threads pi = 3.141590	yesCounter = 1393004362	noCounter = 380625638	expected time = 70
+
