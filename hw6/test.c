@@ -28,5 +28,8 @@ int main()
   printf("%d\t%d\n", yesCounter, noCounter);
   double pi = 4 * (float)yesCounter / (float)(yesCounter + noCounter);
   printf("Pi = %f\n", pi);
+  FILE *resfile = fopen("Database.txt", "a");
+  fprintf(resfile, "1 thread pi = %f\tyesCounter = %d\tnoCounter = %d\n\n", pi, yesCounter, noCounter);
+  fclose(resfile);
   return 0;
 }
