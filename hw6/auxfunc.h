@@ -4,16 +4,13 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
-#include <time.h>
 
 #define threadsCount 2
-#define cpuCount 2
 
 struct Main2ThrMain
 {
   int shmId;
   int semId;
-  int exTime
 };
 
 void Add(int semId, int value)
@@ -37,19 +34,15 @@ void Sub(int semId, int value)
 void *ThreadMain(void *args)
 {
   struct Main2ThrMain transmData = *(struct Main2ThrMain*)args;
-  int *data = shmat(transmData.shmId, 0, 0);
 
+  int *data = shmat(transmData.shmId, 0, 0);
   double x, y;
-  int i, yesCounter, noCounter;
-  transmData.exTime = transmData.exTime * cpuCount;
+  int i;
+  long int yesCounter, noCounter;
   long int seedval;
   struct drand48_data *buffer = calloc(1, sizeof(struct drand48_data));
   srand48_r(seedval, buffer);
-
-  clock_t start;
-  start = clock() / CLOCKS_PER_SEC;
-
-  while((clock() / CLOCKS_PER_SEC) - start < transmData.exTime)
+  while(1 < 2)
   {
     yesCounter = 0;
     noCounter = 0;
@@ -71,23 +64,16 @@ void *ThreadMain(void *args)
   }
 }
 
-void MultiThread(int calcTime)
+void Calculate()
 {
-  int yesCounter, noCounter, i;
+  int i;
   struct Main2ThrMain transmData;
-  transmData.exTime = calcTime;
   key_t key = ftok("key", 0);
   printf("key = %d\n", key);
   transmData.semId = semget(key, 1, IPC_CREAT | 0666);
   printf("semId = %d\n", transmData.semId);
   transmData.shmId = shmget(key, 2*sizeof(double), IPC_CREAT | 0777);
   printf("shmId = %d\n", transmData.shmId);
-
-  Add(transmData.semId, 1);
-
-  int *data = shmat(transmData.shmId, 0, 0);
-  data[0] = 0;
-  data[1] = 0;
 
   pthread_t threadIndex[threadsCount];
   for(i = 0; i < threadsCount; i++)
@@ -99,18 +85,51 @@ void MultiThread(int calcTime)
   {
     pthread_join(threadIndex[i], 0);
   }
+}
 
-  yesCounter = data[0];
-  noCounter = data[1];
-  printf("%d\t%d\n", yesCounter, noCounter);
-  long double pi = 4 * (float)yesCounter / (float)(yesCounter + noCounter);
+
+void ReadPi()
+{
+  key_t key = ftok("key", 0);
+  printf("key = %d\n", key);
+  int shmId = shmget(key, 2*sizeof(long int), IPC_CREAT | 0777);
+  printf("shmId = %d\n", shmId);
+
+  int *data = shmat(shmId, 0, 0);
+  long int yesCounter = data[0];
+  long int noCounter = data[1];
+  printf("%ld\t%ld\n", yesCounter, noCounter);
+  double pi = 4 * (double)yesCounter / (double)(yesCounter + noCounter);
   printf("Pi = %lf\n", pi);
+}
 
-  FILE *resfile = fopen("Database.txt", "a");
-  fprintf(resfile, "%d threads pi = %lf\tyesCounter = %d\tnoCounter = %d\texpected time = %d\n\n", threadsCount, pi, yesCounter, noCounter, calcTime);
-  fclose(resfile);
+void RmVIPC()
+{
+  key_t key = ftok("key", 0);
+  printf("key = %d\n", key);
+  int semId = semget(key, 1, IPC_CREAT | 0666);
+  printf("semId = %d\n", semId);
+  int shmId = shmget(key, 2*sizeof(double), IPC_CREAT | 0777);
+  printf("shmId = %d\n", shmId);
 
-  semctl(transmData.semId, IPC_RMID, 0);
-  shmctl(transmData.shmId, IPC_RMID, 0);
+  semctl(semId, IPC_RMID, 0);
+  shmctl(shmId, IPC_RMID, 0);
+  printf("VIPC successfully removed!\n");
+}
 
+void InitVIPC()
+{
+  key_t key = ftok("key", 0);
+  printf("key = %d\n", key);
+  int semId = semget(key, 1, IPC_CREAT | 0666);
+  printf("semId = %d\n", semId);
+  int shmId = shmget(key, 2*sizeof(double), IPC_CREAT | 0777);
+  printf("shmId = %d\n", shmId);
+
+  Add(semId, 1);
+
+  int *data = shmat(shmId, 0, 0);
+  data[0] = 0;
+  data[1] = 0;
+  printf("VIPC initialized!\n");
 }

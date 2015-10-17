@@ -10,92 +10,69 @@
 
 #define threadsCount 2
 
-struct ParsRes
+int ParsArgs(int argsCount, char **args)
 {
-  int instr;
-  int calcTime;
-};
-
-struct ParsRes ParsArgs(int argsCount, char **args)
-{
-  struct ParsRes res;
   switch (argsCount)
   {
     case 2:
+      if((strcmp(args[1], "-i") == 0)  || (strcmp(args[1], "--init") == 0))
+      {
+        return 0;
+      }
       if((strcmp(args[1], "-h") == 0)  || (strcmp(args[1], "--help") == 0))
       {
-        res.instr = 1;
-        return res;
+        return 1;
       }
-      break;
-
-    case 3:
-      if((strcmp(args[1], "-ot") == 0)  || (strcmp(args[1], "--onethread") == 0))
+      if((strcmp(args[1], "-c") == 0)  || (strcmp(args[1], "--calculate") == 0))
       {
-        res.instr = 2;
-        res.calcTime = atoi(args[2]);
-        return res;
+        return 2;
       }
-      if((strcmp(args[1], "-mt") == 0)  || (strcmp(args[1], "--multithread") == 0))
+      if((strcmp(args[1], "-rd") == 0)  || (strcmp(args[1], "--read") == 0))
       {
-        res.instr = 3;
-        res.calcTime = atoi(args[2]);
-        return res;
+        return 3;
+      }
+      if((strcmp(args[1], "-rm") == 0)  || (strcmp(args[1], "--remove") == 0))
+      {
+        return 4;
       }
       break;
   }
-  res.instr = -1;
-  return res;
-}
-
-void OneThread(int exTime)
-{
-  double x, y;
-  int yesCounter = 0, noCounter = 0;
-  clock_t start, endTime;
-  start = clock() / CLOCKS_PER_SEC;
-
-  while((clock() / CLOCKS_PER_SEC) - start < exTime)
-  {
-    x = -1.0f + 2.0f * drand48();
-    y = -1.0f + 2.0f * drand48();
-    if (x*x + y*y <= 1)
-      yesCounter++;
-    else
-      noCounter++;
-  }
-  printf("%d\t%d\n", yesCounter, noCounter);
-  double pi = 4 * (float)yesCounter / (float)(yesCounter + noCounter);
-  printf("Pi = %f\n", pi);
-  FILE *resfile = fopen("Database.txt", "a");
-  fprintf(resfile, "1 thread pi = %f\tyesCounter = %d\tnoCounter = %d\texpected time = %d\n\n", pi, yesCounter, noCounter, exTime);
-  fclose(resfile);
+  return -1;
 }
 
 
 int main(int argsCount, char **args)
 {
-  struct ParsRes res = ParsArgs(argsCount, args);
-  switch (res.instr)
+  int instr = ParsArgs(argsCount, args);
+  switch (instr)
   {
     case -1:
       printf("Wrong arguments\n");
       break;
 
+    case 0:
+      InitVIPC();
+      break;
+
     case 1:
-      printf("HELP\n-h\t--help\t\t\t\t\tShow help\n");
-      printf("-ot\t--onethread\t[prefered time]\t\tLaunch calculation in 1 thread\n");
-      printf("-mt\t--multithread\t[prefered time]\t\tLaunch calculation in %d threads\n", threadsCount);
+      printf("HELP\n-h\t--help\t\t\tShow help\n");
+      printf("-i\t--init\t\t\tInitialize shmem and semaphore\n");
+      printf("-c\t--calculate\t\tLaunch calculation\n");
+      printf("-rd\t--read\t\t\tDisplay Pi\n");
+      printf("-rm\t--remove\t\tRemove shmem and semaphore\n");
       break;
 
     case 2:
-      printf("Launching calculation of Pi in one thread\n");
-      OneThread(res.calcTime);
+      printf("Launching calculation of Pi in %d threads\n", threadsCount);
+      Calculate();
       break;
 
     case 3:
-      printf("Launching calculation of Pi in %d threads\n", threadsCount);
-      MultiThread(res.calcTime);
+      ReadPi();
+      break;
+
+    case 4:
+      RmVIPC();
       break;
   }
   return 0;
