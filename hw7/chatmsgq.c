@@ -8,7 +8,7 @@
 #include <string.h>
 #include <pthread.h>
 
-void LaunchChat(int msqId);
+void LaunchChat(char *arg);
 void RemoveMsq();
 void *SenderFunc(void *args);
 void *RecieverFunc(void *args);
@@ -38,24 +38,26 @@ int main(int argsCount, char **args)
       break;
 
     case 3:
-      printf("Enjoy your chat!\n");
-      int status = atoi(args[1]);
-      LaunchChat(status);
+      LaunchChat(args[1]);
+      break;
   }
   return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LaunchChat(int status)
+void LaunchChat(char *arg)
 {
   key_t key = ftok("key", 0);
   printf("key = %d\n", key);
   int msqId = msgget(key, IPC_CREAT | 0666);
   printf("msqId = %d\n", msqId);
+  int status = atoi(arg);
 
   struct ChatInfo info = InitFunc(status, msqId);
   info.msqId = msqId;
+  printf("Enjoy your chat!\n");
+
   pthread_create(&threadIds[0], 0, SenderFunc, &info);
   pthread_create(&threadIds[1], 0, RecieverFunc, &info);
   pthread_join(threadIds[0], 0);
@@ -99,10 +101,8 @@ void *SenderFunc(void *args)
   message.type = info.companionPid;
   int size = sizeof(struct Message) - sizeof(long);
   int flag = 0;
-  printf("In sender");
   while(flag == 0)
   {
-    printf("You: ");
     gets(message.msg);
     msgsnd(info.msqId, &message, size, 0);
     if(strcmp(message.msg, ":q") == 0)
@@ -118,19 +118,18 @@ void *RecieverFunc(void *args)
   struct Message message;
   int size = sizeof(struct Message) - sizeof(long);
   int flag = 0;
-  printf("In reciever");
   while(flag == 0)
   {
-    gets(message.msg);
-    msgrcv(info.msqId, &message, info.myPid,size, 0);
+    msgrcv(info.msqId, &message, size, info.myPid, 0);
     if(strcmp(message.msg, ":q") == 0)
     {
-      printf("User %d out\n", info.companionPid);
+      printf("\nUser %d offline\n", info.companionPid);
+      msgsnd(info.msqId, &message, size, 0);
       flag = 1;
     }
     else
     {
-      printf("%d: %s\n", info.companionPid, message.msg);
+      printf("#%d: %s\n", info.companionPid, message.msg);
     }
   }
 }
