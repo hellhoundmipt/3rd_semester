@@ -6,17 +6,19 @@
 #include "auxfunc.h"
 #include <unistd.h>
 #include <string.h>
+#include <pthread.h>
 
-int LaunchClient(int msqId);
-int LaunchServer(int msqId);
-void RemoveMsgQ(int msqId);
+void LaunchChat(int msqId);
+void RemoveMsq();
+void *SenderFunc(void *args);
+void *RecieverFunc(void *args);
+struct ChatInfo InitFunc(int status, int msqId);
+
+pthread_t threadIds[2];
 
 int main(int argsCount, char **args)
 {
-  key_t key = ftok("key", 0);
-  printf("key = %d\n", key);
-  int msqId = msgget(key, IPC_CREAT | 0666);
-  printf("msqId = %d\n", msqId);
+
   int instr = ParsArgs(argsCount, args);
   switch (instr)
   {
@@ -26,90 +28,120 @@ int main(int argsCount, char **args)
 
     case 1:
       printf("HELP\n-h\t--help\t\t\tShow help\n");
-      printf("-c\t--client\t\tLaumching client\n");
-      printf("-s\t--server\t\tLaumching server\n");
       printf("-rm\t--remove\t\tRemove message queue\n");
+      printf("1 or 2\t\t\t\tStart chat (each companon should use different number)\n");
       printf(":q (during chat)\t\tStop chat\n");
       break;
 
     case 2:
-    printf("Launching client\n");
-      LaunchClient(msqId);
+      RemoveMsq();
       break;
 
     case 3:
-    printf("Launching server\n");
-      LaunchServer(msqId);
-      break;
-
-    case 4:
-      RemoveMsgQ(msqId);
-      break;
+      printf("Enjoy your chat!\n");
+      int status = atoi(args[1]);
+      LaunchChat(status);
   }
   return 0;
 }
 
-int LaunchClient(int msqId)
-{
-  struct Msg2Serv sender;
-  struct Msg2Client reciever;
-  sender.type = 1;
-  int senderSize = sizeof(struct Msg2Serv) - sizeof(long);
-  int recieverSize = sizeof(struct Msg2Client) - sizeof(long);
-  sender.pid = getpid();
-  while(1)
-  {
-    printf("Enter message\n");
-    gets(sender.msg);
-    msgsnd(msqId, &sender, senderSize, 0);
-    if(strcmp(sender.msg, ":q") == 0)
-    {
-      printf("Client out\n");
-      return 0;
-    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    msgrcv(msqId, &reciever, recieverSize, sender.pid, 0);
-    if(strcmp(reciever.msg, ":q") == 0)
-    {
-      printf("Server out\n");
-      return 0;
-    }
-    printf("S: %s\n", reciever.msg);
+void LaunchChat(int status)
+{
+  key_t key = ftok("key", 0);
+  printf("key = %d\n", key);
+  int msqId = msgget(key, IPC_CREAT | 0666);
+  printf("msqId = %d\n", msqId);
+
+  struct ChatInfo info = InitFunc(status, msqId);
+  info.msqId = msqId;
+  pthread_create(&threadIds[0], 0, SenderFunc, &info);
+  pthread_create(&threadIds[1], 0, RecieverFunc, &info);
+  pthread_join(threadIds[0], 0);
+  pthread_join(threadIds[1], 0);
+}
+
+struct ChatInfo InitFunc(int status, int msqId)
+{
+  int initSize = sizeof(struct MsqInit) - sizeof(long);
+  struct MsqInit init;
+  struct ChatInfo info;
+
+  switch (status)
+  {
+    case 1:
+      init.type = 1;
+      init.pid = getpid();
+      info.myPid = init.pid;
+      msgsnd(msqId, &init, initSize, 0);
+      msgrcv(msqId, &init, initSize, info.myPid, 0);
+      info.companionPid = init.pid;
+      break;
+
+    case 2:
+      msgrcv(msqId, &init, initSize, 1, 0);
+      info.companionPid = init.pid;
+      init.type = init.pid;
+      init.pid = getpid();
+      info.myPid = init.pid;
+      msgsnd(msqId, &init, initSize, 0);
+      break;
   }
+  return info;
 }
 
 
-int LaunchServer(int msqId)
+void *SenderFunc(void *args)
 {
-  struct Msg2Serv reciever;
-  struct Msg2Client sender;
-  int recieverSize = sizeof(struct Msg2Serv) - sizeof(long);
-  int senderSize = sizeof(struct Msg2Client) - sizeof(long);
-  while(1)
+  struct ChatInfo info = *(struct ChatInfo*)args;
+  struct Message message;
+  message.type = info.companionPid;
+  int size = sizeof(struct Message) - sizeof(long);
+  int flag = 0;
+  printf("In sender");
+  while(flag == 0)
   {
-    msgrcv(msqId, &reciever, recieverSize, 1, 0);
-    if(strcmp(reciever.msg, ":q") == 0)
+    printf("You: ");
+    gets(message.msg);
+    msgsnd(info.msqId, &message, size, 0);
+    if(strcmp(message.msg, ":q") == 0)
     {
-      printf("Client out\n");
-      return 0;
-    }
-    printf("C: %s\n", reciever.msg);
-
-    sender.type = reciever.pid;
-
-    printf("Enter message\n");
-    gets(sender.msg);
-    msgsnd(msqId, &sender, senderSize, 0);
-    if(strcmp(sender.msg, ":q") == 0)
-    {
-      printf("Server out\n");
-      return 0;
+      flag = 1;
     }
   }
 }
 
-void RemoveMsgQ(int msqId)
+void *RecieverFunc(void *args)
 {
+  struct ChatInfo info = *(struct ChatInfo*)args;
+  struct Message message;
+  int size = sizeof(struct Message) - sizeof(long);
+  int flag = 0;
+  printf("In reciever");
+  while(flag == 0)
+  {
+    gets(message.msg);
+    msgrcv(info.msqId, &message, info.myPid,size, 0);
+    if(strcmp(message.msg, ":q") == 0)
+    {
+      printf("User %d out\n", info.companionPid);
+      flag = 1;
+    }
+    else
+    {
+      printf("%d: %s\n", info.companionPid, message.msg);
+    }
+  }
+}
+
+void RemoveMsq()
+{
+  key_t key = ftok("key", 0);
+  printf("key = %d\n", key);
+  int msqId = msgget(key, IPC_CREAT | 0666);
+  printf("msqId = %d\n", msqId);
+
   if(msgctl(msqId, IPC_RMID, 0) == 0)
   {
     printf("Message queue removed successfully\n");
