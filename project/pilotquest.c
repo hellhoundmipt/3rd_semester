@@ -31,22 +31,27 @@ void GameLoop()
         ShowDestinations(locations, currLocation);
         printf("Where would you like to go?\n");
         inSwitchCurrLoc = ChangeLoc(locations, currLocation);
-        exit(0);
       break;
 
       case 1:
-        printf("I'm here 1\n");
-        exit(0);
+        printf("You've landed on the lawn. Unfortunately, no signs of general.\n");
+        ShowDestinations(locations, currLocation);
+        printf("Where would you like to go?\n");
+        inSwitchCurrLoc = ChangeLoc(locations, currLocation);
       break;
 
       case 2:
-        printf("I'm here 2\n");
-        exit(0);
+        printf("Some soldiers at the enterance. Heavy weapons and armor, no reason to have some chat with them.\n");
+        ShowDestinations(locations, currLocation);
+        printf("Where would you like to go?\n");
+        inSwitchCurrLoc = ChangeLoc(locations, currLocation);
       break;
 
       case 3:
-        printf("I'm here 3\n");
-        exit(0);
+        printf("Calm sandy beach and calm sunny weather. What can be better now?.\n");
+        ShowDestinations(locations, currLocation);
+        printf("Where would you like to go?\n");
+        inSwitchCurrLoc = ChangeLoc(locations, currLocation);
       break;
 
       case 4:

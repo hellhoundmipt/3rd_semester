@@ -24,7 +24,7 @@ void ShowDestinations(struct Location *locations, int currLocation)
 {
   printf("You can travel to these places (enter num to proceed):\n");
   int i = 0;
-
+  for(i; i < locations[currLocation].incidentLocsCount; i++)
     printf("%d\t%s\n", i, locations[locations[currLocation].incidentLocs[i]].name);
 }
 
@@ -33,13 +33,13 @@ void ShowDestinations(struct Location *locations, int currLocation)
 int ChangeLoc(struct Location *locations, int currLocation)
 {
   int destination;
-  int i = 0;
   while(1)
   {
     scanf("%d", &destination);
+    int i = 0;
     for(i; i < locations[currLocation].incidentLocsCount; i++)
     {
-      if(destination == locations[currLocation].incidentLocs[i])
+      if(destination == i)
         {
           printf("Travelling to %s.\n", locations[locations[currLocation].incidentLocs[i]].name);
           return destination;
