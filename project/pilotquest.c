@@ -1,6 +1,7 @@
 //#include <stdbool.h>
 #include <stdio.h>
 #include "auxfile.h"
+#include "eventsfile.h"
 
 #define maxIncidentLocs 5
 #define locsCount 8
@@ -22,25 +23,25 @@ void GameLoop(struct MainHero hero)
     switch(currLocation)
     {
       case 0:
-        printf("You are at the base, deciding where to go to and what to do.\n");
+        printf("Вы сидите в лёгком флаере и думаете, куда полететь.\n");
+        ShowAmmo(hero);
+        ShowKnowledge(hero);
         ShowDestinations(locations, currLocation);
-        printf("Where would you like to go?\n");
         inSwitchCurrLoc = ChangeLoc(locations, currLocation);
       break;
 
       case 1:
         if(hero.flag[2] == 1)
         {
-          printf("You've landed on the lawn, covered with blood of your victims. Unfortunately, there is nothing else to do here.\n");
+          printf("Вы приземлилсь на поляну у недавно погашенного костра. Оглядевшись, вы поняли, что сделать здесь в общем-то нечего.\n");
+          printf("Нужно решить, куда лететь дальше.\n");
           ShowDestinations(locations, currLocation);
-          printf("Where would you like to go?\n");
           inSwitchCurrLoc = ChangeLoc(locations, currLocation);
         }
         else
         {
-          printf("Got here\n");
           hero.flag[2] = 1;
-          //hero = IncidentOnTheLawn(hero);
+          hero = IncidentOnTheLawn(hero);
           inSwitchCurrLoc = 0;
         }
       break;

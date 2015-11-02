@@ -31,10 +31,50 @@ Some details:
 /*Messages------------------------------------------------------------------------------------------------------------------------------------------------------*/
 void ShowDestinations(struct Location *locations, int currLocation)
 {
-  printf("You can travel to these places (enter num to proceed):\n");
   int i = 0;
   for(i; i < locations[currLocation].incidentLocsCount; i++)
     printf("%d\t%s\n", i, locations[locations[currLocation].incidentLocs[i]].name);
+}
+
+void ShowAmmo(struct MainHero hero)
+{
+  printf("\n\t\tУ вас есть %d зарядов в лазерной винтовке, %d ", hero.rifleShots, hero.greandes);
+  switch (hero.greandes)
+  {
+    case 2:
+      printf("гранаты, ");
+    break;
+
+    case 1:
+      printf("граната, ");
+    break;
+
+    case 0:
+      printf("гранат, ");
+    break;
+  }
+  switch (hero.health)
+  {
+    case 3:
+      printf("вы полностью здоровы\n\n");
+    break;
+
+    case 2:
+      printf("вы легко ранены\n\n");
+    break;
+
+    case 1:
+      printf("вы тяжело ранены\n\n");
+    break;
+  }
+}
+
+void ShowKnowledge(struct MainHero hero)
+{
+  if(hero.flag[0] == 1)
+    printf("\t\tВы знаете про домик Борзухана в лесу.\n");
+  if(hero.flag[1] == 1)
+    printf("\t\tВы знаете про секретный пароль в пещере у моря.\n");
 }
 
 /*Move rules----------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -54,50 +94,44 @@ int ChangeLoc(struct Location *locations, int currLocation)
           return locations[currLocation].incidentLocs[i];
         }
     }
-  printf("Cannot travel there.\n");
+  printf("Туда нельзя.\n");
   ShowDestinations(locations, currLocation);
   }
-}
-
-/*Events in locations-------------------------------------------------------------------------------------------------------------------------------------------*/
-
-struct MainHero IncidentOnTheLawn(struct MainHero hero)
-{
-  hero.flag[0] = 0;
-  hero.flag[1] = 0;
-  hero.flag[2] = 0;
-  hero.rifleShots = 10;
-  hero.greandes = 2;
-  hero.health = 3;
 }
 
 /*Initialize----------------------------------------------------------------------------------------------------------------------------------------------------*/
 struct MainHero InitHero(struct MainHero hero)
 {
-
+    hero.flag[0] = 0;
+    hero.flag[1] = 0;
+    hero.flag[2] = 0;
+    hero.rifleShots = 10;
+    hero.greandes = 2;
+    hero.health = 3;
+    return hero;
 }
 
 struct Location *InitLocations(struct Location *locations)
 {
-  locations[0].name = (char *)calloc(5, sizeof(char));
-  locations[0].name = "Base";
+  locations[0].name = (char *)calloc(7, sizeof(char));
+  locations[0].name = "Лагерь";
   locations[0].incidentLocsCount = 3;
   locations[0].incidentLocs[0] = 1;
   locations[0].incidentLocs[1] = 2;
   locations[0].incidentLocs[2] = 3;
 
-  locations[1].name = (char *)calloc(6, sizeof(char));
-  locations[1].name = "Lawn";
+  locations[1].name = (char *)calloc(7, sizeof(char));
+  locations[1].name = "Поляна";
   locations[1].incidentLocsCount = 1;
   locations[1].incidentLocs[0] = 0;
 
-  locations[2].name = (char *)calloc(10, sizeof(char));
-  locations[2].name = "Enterance";
+  locations[2].name = (char *)calloc(5, sizeof(char));
+  locations[2].name = "Горы";
   locations[2].incidentLocsCount = 1;
   locations[2].incidentLocs[0] = 0;
 
-  locations[3].name = (char *)calloc(6, sizeof(char));
-  locations[3].name = "Shore";
+  locations[3].name = (char *)calloc(5, sizeof(char));
+  locations[3].name = "Пляж";
   locations[3].incidentLocsCount = 1;
   locations[3].incidentLocs[0] = 0;
 
@@ -122,8 +156,8 @@ struct Location *InitLocations(struct Location *locations)
   locations[7].name = "Engine room";
   locations[7].incidentLocsCount = 0;
 
-  locations[8].name = (char *)calloc(20, sizeof(char));
-  locations[8].name = "House in the forest";
+  locations[8].name = (char *)calloc(13, sizeof(char));
+  locations[8].name = "Домик в лесу";
   locations[8].incidentLocsCount = 1;
   locations[8].incidentLocs[0] = 0;
   return locations;
