@@ -1,4 +1,4 @@
-#include <stdbool.h>
+//#include <stdbool.h>
 #include <stdio.h>
 #include "auxfile.h"
 
@@ -6,24 +6,19 @@
 #define locsCount 8
 
 
-struct MainHero
+void GameLoop(struct MainHero hero)
 {
-  bool flag[2];
-};
-
-void GameLoop()
-{
-  struct Location locations[locsCount];
-  InitLocations(locations);
+  struct Location *locations;
+  locations = calloc(locsCount, sizeof(struct Location));
+  locations = InitLocations(locations);
   int currLocation = 0;
   int inSwitchCurrLoc = 0;
-  struct MainHero hero;
-  hero.flag[0] = false;
-  hero.flag[1] = false;
 
-  bool exitFlag = false;
-  while(exitFlag != true)
+  int exitFlag = 0;
+  printf("Currloc = %s\n", locations[currLocation].name);
+  while(exitFlag != 1)
   {
+    //printf("%d\t%d\t%d\n", hero.flag[0], hero.flag[1], hero.flag[2]);
     switch(currLocation)
     {
       case 0:
@@ -34,10 +29,20 @@ void GameLoop()
       break;
 
       case 1:
-        printf("You've landed on the lawn. Unfortunately, no signs of general.\n");
-        ShowDestinations(locations, currLocation);
-        printf("Where would you like to go?\n");
-        inSwitchCurrLoc = ChangeLoc(locations, currLocation);
+        if(hero.flag[2] == 1)
+        {
+          printf("You've landed on the lawn, covered with blood of your victims. Unfortunately, there is nothing else to do here.\n");
+          ShowDestinations(locations, currLocation);
+          printf("Where would you like to go?\n");
+          inSwitchCurrLoc = ChangeLoc(locations, currLocation);
+        }
+        else
+        {
+          printf("Got here\n");
+          hero.flag[2] = 1;
+          //hero = IncidentOnTheLawn(hero);
+          inSwitchCurrLoc = 0;
+        }
       break;
 
       case 2:
@@ -80,12 +85,16 @@ void GameLoop()
       break;
     }
     currLocation = inSwitchCurrLoc;
+    printf("Newloc = %s\n", locations[currLocation].name);
   }
 }
 
 int main()
 {
+  struct MainHero hero = InitHero(hero);
   printf("Welcome, commader!\n");
-  GameLoop();
+  printf("Enter your name:\n");
+  gets(hero.name);
+  GameLoop(hero);
   printf("Thanks for playing!\n");
 }

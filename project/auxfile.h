@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <stdlib.h>
 
 #define maxIncidentLocs 5
@@ -12,11 +11,21 @@ struct Location
   int incidentLocsCount;
 };
 
+struct MainHero
+{
+  char name[20];
+  int flag[3];
+  int rifleShots;
+  int greandes;
+  int health;
+};
+
 /*
 Some details:
   hero:
-  flag[0] - the hero knows about the house in the forest
-  flag[1] - the hero knows about the seceret enterace at the shore
+  hero.flag[0] - the hero knows about the house in the forest
+  hero.flag[1] - the hero knows about the seceret enterace at the shore
+  hero.flag[2] - hero has already been to the lawn
 */
 
 /*Messages------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -42,7 +51,7 @@ int ChangeLoc(struct Location *locations, int currLocation)
       if(destination == i)
         {
           printf("Travelling to %s.\n", locations[locations[currLocation].incidentLocs[i]].name);
-          return destination;
+          return locations[currLocation].incidentLocs[i];
         }
     }
   printf("Cannot travel there.\n");
@@ -50,10 +59,26 @@ int ChangeLoc(struct Location *locations, int currLocation)
   }
 }
 
-/*Initialize locations------------------------------------------------------------------------------------------------------------------------------------------*/
-void InitLocations(struct Location *locations)
+/*Events in locations-------------------------------------------------------------------------------------------------------------------------------------------*/
+
+struct MainHero IncidentOnTheLawn(struct MainHero hero)
+{
+  hero.flag[0] = 0;
+  hero.flag[1] = 0;
+  hero.flag[2] = 0;
+  hero.rifleShots = 10;
+  hero.greandes = 2;
+  hero.health = 3;
+}
+
+/*Initialize----------------------------------------------------------------------------------------------------------------------------------------------------*/
+struct MainHero InitHero(struct MainHero hero)
 {
 
+}
+
+struct Location *InitLocations(struct Location *locations)
+{
   locations[0].name = (char *)calloc(5, sizeof(char));
   locations[0].name = "Base";
   locations[0].incidentLocsCount = 3;
@@ -101,4 +126,5 @@ void InitLocations(struct Location *locations)
   locations[8].name = "House in the forest";
   locations[8].incidentLocsCount = 1;
   locations[8].incidentLocs[0] = 0;
+  return locations;
 }
