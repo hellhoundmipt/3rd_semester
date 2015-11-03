@@ -1,5 +1,6 @@
 //#include <stdbool.h>
 #include <stdio.h>
+#include <fcntl.h>
 #include "auxfile.h"
 #include "eventsfile.h"
 
@@ -33,7 +34,7 @@ void GameLoop(struct MainHero hero)
       case 1:
         if(hero.flag[2] == 1)
         {
-          printf("Вы приземлилсь на поляну у недавно погашенного костра. Оглядевшись, вы поняли, что сделать здесь в общем-то нечего.\n");
+          printf("Вы приземлилсь на поляну у недавно потузшего костра. Оглядевшись, вы поняли, что делать здесь в общем-то нечего.\n");
           printf("Нужно решить, куда лететь дальше.\n");
           ShowDestinations(locations, currLocation);
           inSwitchCurrLoc = ChangeLoc(locations, currLocation);
@@ -95,7 +96,8 @@ int main()
   struct MainHero hero = InitHero(hero);
   printf("Welcome, commader!\n");
   printf("Enter your name:\n");
-  gets(hero.name);
+  scanf("%29s", hero.name);
+  while (getchar() != '\n');
   printf("Enjoy!\n");
   sleep(1);
   Briefing(hero.name);

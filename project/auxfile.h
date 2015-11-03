@@ -26,6 +26,7 @@ Some details:
   hero.flag[0] - the hero knows about the house in the forest
   hero.flag[1] - the hero knows about the seceret enterace at the shore
   hero.flag[2] - hero has already been to the lawn
+  hero.flag[3] - hero has a stunner
 */
 
 /*Messages------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -38,7 +39,17 @@ void ShowDestinations(struct Location *locations, int currLocation)
 
 void ShowAmmo(struct MainHero hero)
 {
-  printf("\n\t\tУ вас есть %d зарядов в лазерной винтовке, %d ", hero.rifleShots, hero.greandes);
+  printf("\n\t\tУ вас есть %d ", hero.rifleShots);
+  if(hero.rifleShots == 1)
+    printf("заряд ");
+  else
+    {
+      if((hero.rifleShots >= 2) && (hero.rifleShots <= 4))
+        printf("заряда ");
+      else
+        printf("зарядов ");
+    }
+  printf("в лазерной винтовке, %d ", hero.greandes);
   switch (hero.greandes)
   {
     case 2:
@@ -75,9 +86,12 @@ void ShowKnowledge(struct MainHero hero)
     printf("\t\tВы знаете про домик Борзухана в лесу.\n");
   if(hero.flag[1] == 1)
     printf("\t\tВы знаете про секретный пароль в пещере у моря.\n");
+  if(hero.flag[3] == 1)
+    printf("\t\tУ вас есть станнер.\n");
+
 }
 
-/*Move rules----------------------------------------------------------------------------------------------------------------------------------------------------*/
+/*Other---------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 int ChangeLoc(struct Location *locations, int currLocation)
 {
@@ -97,6 +111,17 @@ int ChangeLoc(struct Location *locations, int currLocation)
   printf("Туда нельзя.\n");
   ShowDestinations(locations, currLocation);
   }
+}
+
+int FireRifle(int avgDamage, int neighbourhood)
+{
+  int res;
+  long int seedval = time(NULL);
+  struct drand48_data *buffer = calloc(1, sizeof(struct drand48_data));
+  srand48_r(seedval, buffer);
+  drand48_r(buffer, &res);
+  res = res / (RAND_MAX / neighbourhood) + avgDamage;
+  return res;
 }
 
 /*Initialize----------------------------------------------------------------------------------------------------------------------------------------------------*/
