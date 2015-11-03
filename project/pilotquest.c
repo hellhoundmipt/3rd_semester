@@ -96,6 +96,9 @@ int main()
   printf("Welcome, commader!\n");
   printf("Enter your name:\n");
   gets(hero.name);
+  printf("Enjoy!\n");
+  sleep(1);
+  Briefing(hero.name);
   GameLoop(hero);
   printf("Thanks for playing!\n");
 }
