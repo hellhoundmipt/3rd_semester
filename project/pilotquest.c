@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include "auxfile.h"
 #include "eventsfile.h"
+#include "eventsfile2.h"
 
 #define maxIncidentLocs 5
 #define locsCount 8
@@ -20,7 +21,6 @@ void GameLoop(struct MainHero hero)
   printf("Currloc = %s\n", locations[currLocation].name);
   while(exitFlag != 1)
   {
-    //printf("%d\t%d\t%d\n", hero.flag[0], hero.flag[1], hero.flag[2]);
     switch(currLocation)
     {
       case 0:
@@ -43,6 +43,11 @@ void GameLoop(struct MainHero hero)
         {
           hero.flag[2] = 1;
           hero = IncidentOnTheLawn(hero);
+          if(hero.flag[0] == 1)
+          {
+            locations[0].incidentLocsCount++;
+            locations[0].incidentLocs[3] = 8;
+          }
           inSwitchCurrLoc = 0;
         }
       break;
@@ -82,8 +87,18 @@ void GameLoop(struct MainHero hero)
       break;
 
       case 8:
-        printf("I'm here 8\n");
-        exit(0);
+      if(hero.flag[4] == 1)
+      {
+        printf("Вы приземлилсь у домика пеленега Борзухана. Оглядевшись, вы поняли, что делать здесь в общем-то нечего.\n");
+        printf("Нужно решить, куда лететь дальше.\n");
+        ShowDestinations(locations, currLocation);
+        inSwitchCurrLoc = ChangeLoc(locations, currLocation);
+      }
+      else
+      {
+        hero = CaptureBorzukhan(hero);
+        inSwitchCurrLoc = 0;
+      }
       break;
     }
     currLocation = inSwitchCurrLoc;

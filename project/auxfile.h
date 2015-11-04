@@ -14,7 +14,7 @@ struct Location
 struct MainHero
 {
   char name[20];
-  int flag[3];
+  int flag[5];
   int rifleShots;
   int greandes;
   int health;
@@ -23,10 +23,11 @@ struct MainHero
 /*
 Some details:
   hero:
-  hero.flag[0] - the hero knows about the house in the forest
+  hero.flag[0] - the hero knows about the house in the forest, Borzukhan alive or dead
   hero.flag[1] - the hero knows about the seceret enterace at the shore
   hero.flag[2] - hero has already been to the lawn
   hero.flag[3] - hero has a stunner
+  hero.flag[4] - hero has already captured Borzukhan
 */
 
 /*Messages------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -84,11 +85,14 @@ void ShowKnowledge(struct MainHero hero)
 {
   if(hero.flag[0] == 1)
     printf("\t\tВы знаете про домик Борзухана в лесу.\n");
+  if(hero.flag[0] == 2)
+    printf("\t\tБорзухан взят живым.\n");
+  if(hero.flag[0] == 3)
+    printf("\t\tБорзухан мёртв.\n");
   if(hero.flag[1] == 1)
     printf("\t\tВы знаете про секретный пароль в пещере у моря.\n");
   if(hero.flag[3] == 1)
     printf("\t\tУ вас есть станнер.\n");
-
 }
 
 /*Other---------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -127,9 +131,11 @@ int FireRifle(int avgDamage, int neighbourhood)
 /*Initialize----------------------------------------------------------------------------------------------------------------------------------------------------*/
 struct MainHero InitHero(struct MainHero hero)
 {
-    hero.flag[0] = 0;
-    hero.flag[1] = 0;
-    hero.flag[2] = 0;
+    int i = 0;
+    for(i; i <= 5; i++)
+    {
+      hero.flag[i] = 0;
+    }
     hero.rifleShots = 10;
     hero.greandes = 2;
     hero.health = 3;

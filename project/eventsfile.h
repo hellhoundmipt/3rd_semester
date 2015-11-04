@@ -25,11 +25,11 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
       printf("1: Расстрелять из лазерной винтовки\n");
       printf("2: Улететь\n");
       printf("3: Прислушаться к разговору\n");
-      int decidion;
-      scanf("%d", &decidion);
       int inFlag = 0;
       while(inFlag != 1)
       {
+        int decidion;
+        scanf("%d", &decidion);
         switch (decidion)
         {
           case 3:
@@ -41,14 +41,14 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
             int shots = 5;
             if (hero.rifleShots - shots >= 0)
             {
-              hero.rifleShots = hero.rifleShots - shots;
+              hero.rifleShots = hero.rifleShots - shots + 4;
               printf("Бедолаги в панике забегали по поляне, но благодаря удачной позиции вы были точны как никогда и потратили всего 5 зарядов.\n");
               printf("Когда со всеми было покончено, вы окинули взглядом поле боя.\n");
               printf("Вы подошли к неподвижно лежащему человеку и попробовали привести его в чувство. Поначалу вам ничего не удавалось,\n");
               printf("но наконец он зашевелился, открыл глаза и простонал:\n");
               printf("-Где я? Кто вы такой?\n");
               printf("-Я %s, я ищу базу пеленега Борзухана.\n", hero.name);
-              printf("-Сп-пасибо в-вам, Греф, за... то, что вы... с-спасли меня от этих мерз-завцев, - с трудом проговорил человек, - Я б-был простым...\n");
+              printf("-Сп-пасибо в-вам, %s, за... то, что вы... с-спасли меня от этих мерз-завцев, - с трудом проговорил человек, - Я б-был простым...\n", hero.name);
               printf("торговцем... Они схватили меня прямо в космопорту... где же это было... извините, я не помню названия той планеты. Они потребовали\n");
               printf("выкуп, но я н-не мог заплатить той суммы, какую они от меня ›‹отели. Поэтому они... оглушили меня и перевезли сюда. Как-то я приходил в\n");
               printf("сознание и слышал, как они говорили что-то о каком-то Борзухане. Так это его вы ищете? Я слышал что-то про горы... а также про какой-то\n");
@@ -90,6 +90,10 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
             printf("Вы решили не связыываться с подозрительными личностями, развернули флаер и отправились к лагерю\n");
             return hero;
           break;
+
+          default:
+            printf("Так не выйдет...\n");
+          break;
         }
       }
 
@@ -106,11 +110,11 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
       printf("0: Бросить гранату\n");
       printf("1: Расстрелять из лазерной винтовки\n");
       printf("2: Улететь\n");
-      int decidion;
-      scanf("%d", &decidion);
       int inFlag = 0;
       while(inFlag != 1)
       {
+        int decidion;
+        scanf("%d", &decidion);
         switch (decidion)
         {
           case 2:
@@ -123,9 +127,7 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
             int shots = 5;
             if (hero.rifleShots - shots >= 0)
             {
-              printf("\t\t\t%d\n", hero.rifleShots);
-              hero.rifleShots = hero.rifleShots - shots;
-              printf("\t\t\t%d\n", hero.rifleShots);
+              hero.rifleShots = hero.rifleShots - shots + 4;
               printf("Бедолаги в панике забегали по поляне, но благодаря удачной позиции вы были точны как никогда и потратили всего 5 зарядов.\n");
               printf("Когда со всеми было покончено, вы окинули взглядом поле боя.\n");
               printf("Вы подошли к неподвижно лежащему человеку и попробовали привести его в чувство. Поначалу вам ничего не удавалось,\n");
@@ -143,7 +145,6 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
               printf("Долетев до лагеря, вы сдали раненного в медпалатку, а сами продлжили свои поиски.\n");
               hero.flag[1] = 1;
               hero.flag[3] = 1;
-              printf("\t\t\t%d\n", hero.rifleShots);
               return hero;
             }
             else
@@ -169,6 +170,10 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
             {
               printf("Порывшись в своём поясе, вы не обнаружили ни одной гранаты. Нужно придумть что-то другое.\n");
             }
+          break;
+
+          default:
+            printf("Так не выйдет...\n");
           break;
         }
       }
@@ -248,7 +253,6 @@ struct MainHero IncidentOnTheLawn(struct MainHero hero)
 
     case 3:
       hero = DealWithPelenegs(hero);
-      printf("\t\t\t%d\n", hero.rifleShots);
       return hero;
     break;
 
@@ -263,7 +267,7 @@ struct MainHero IncidentOnTheLawn(struct MainHero hero)
   }
 }
 
-
+/*Briefing-----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 void Briefing(char *yourName)
 {
   printf("В лагере вас встретил правительственный агент\n");
