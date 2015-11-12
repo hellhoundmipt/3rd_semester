@@ -4,9 +4,10 @@
 #include "auxfile.h"
 #include "eventsfile.h"
 #include "eventsfile2.h"
+#include "eventsfile3.h"
 
 #define maxIncidentLocs 5
-#define locsCount 8
+#define locsCount 5
 
 
 void GameLoop(struct MainHero hero)
@@ -46,7 +47,7 @@ void GameLoop(struct MainHero hero)
           if(hero.flag[0] == 1)
           {
             locations[0].incidentLocsCount++;
-            locations[0].incidentLocs[3] = 8;
+            locations[0].incidentLocs[3] = 4;
           }
           inSwitchCurrLoc = 0;
         }
@@ -60,33 +61,45 @@ void GameLoop(struct MainHero hero)
       break;
 
       case 3:
-        printf("Calm sandy beach and calm sunny weather. What can be better now?.\n");
+        if(hero.flag[1] == 0)
+        {
+          printf("Вы приземлились около песчаного пляжа, вышли из флаера и осмотрелись. Вдали виднеется грот, но,\n");
+          printf("осмотрев его, вы так ничего и не заметили. Вы бы и дальше продолжали любоваться видами, но нужно возвращаться к выполнению задания.\n");
+        }
+        else
+        {
+          printf("Вы приземлились около песчаного пляжа, вышли из флаера и осмотрелись. Вдали виднеется грот, в котором,\n");
+          printf("как вы знаете, находится вход на базу Борзухана.");
+          int desidion;
+          int inFlag = 0;
+          while(inFlag == 0)
+          {
+            printf(" Будете ли искать вход сейчас? (0 do/1 do not)\n");
+            scanf("%d", &desidion);
+            if(desidion == 0)
+            {
+              printf("Let's come in!\n");
+              EnterFromTheShore(hero);
+              inFlag = 1;
+            }
+            else
+            {
+              if(desidion == 1)
+              {
+                printf("Вы решили пока не входить в грот.\n");
+                inFlag = 1;
+              }
+              else
+                printf("Так не выйдет...\n");
+            }
+          };
+        }
+        printf("Куда собираетесь выдвигаться?\n");
         ShowDestinations(locations, currLocation);
-        printf("Where would you like to go?\n");
         inSwitchCurrLoc = ChangeLoc(locations, currLocation);
       break;
 
       case 4:
-        printf("I'm here 4\n");
-        exit(0);
-      break;
-
-      case 5:
-        printf("I'm here 5\n");
-        exit(0);
-      break;
-
-      case 6:
-        printf("I'm here 6\n");
-        exit(0);
-      break;
-
-      case 7:
-        printf("I'm here 7\n");
-        exit(0);
-      break;
-
-      case 8:
       if(hero.flag[4] == 1)
       {
         printf("Вы приземлилсь у домика пеленега Борзухана. Оглядевшись, вы поняли, что делать здесь в общем-то нечего.\n");

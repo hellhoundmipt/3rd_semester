@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #define maxIncidentLocs 5
-#define locsCount 8
+#define locsCount 5
 
 struct Location
 {
@@ -136,6 +136,7 @@ struct MainHero InitHero(struct MainHero hero)
     {
       hero.flag[i] = 0;
     }
+    hero.flag[1] = 1;
     hero.rifleShots = 10;
     hero.greandes = 2;
     hero.health = 3;
@@ -166,30 +167,9 @@ struct Location *InitLocations(struct Location *locations)
   locations[3].incidentLocsCount = 1;
   locations[3].incidentLocs[0] = 0;
 
-  locations[4].name = (char *)calloc(9, sizeof(char));
-  locations[4].name = "Corridor";
-  locations[4].incidentLocsCount = 3;
-  locations[4].incidentLocs[0] = 5;
-  locations[4].incidentLocs[1] = 6;
-  locations[4].incidentLocs[2] = 7;
-
-  locations[5].name = (char *)calloc(14, sizeof(char));
-  locations[5].name = "Security room";
-  locations[5].incidentLocsCount = 1;
-  locations[5].incidentLocs[0] = 4;
-
-  locations[6].name = (char *)calloc(10, sizeof(char));
-  locations[6].name = "Canteen";
-  locations[6].incidentLocsCount = 1;
-  locations[6].incidentLocs[0] = 4;
-
-  locations[7].name = (char *)calloc(12, sizeof(char));
-  locations[7].name = "Engine room";
-  locations[7].incidentLocsCount = 0;
-
-  locations[8].name = (char *)calloc(13, sizeof(char));
-  locations[8].name = "Домик в лесу";
-  locations[8].incidentLocsCount = 1;
-  locations[8].incidentLocs[0] = 0;
+  locations[4].name = (char *)calloc(13, sizeof(char));
+  locations[4].name = "Домик в лесу";
+  locations[4].incidentLocsCount = 1;
+  locations[4].incidentLocs[0] = 0;
   return locations;
 }
