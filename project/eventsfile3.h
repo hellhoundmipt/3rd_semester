@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #define locsCountBase 5
+#define maxIncidentLocs 5
 /*At the mountains, shore and inside the base*/
 /*First init locations inside the base------------------------------------------------------------------------------------------------------------------------*/
 struct Location* InitLocationsInBase(struct Location *locations)
@@ -36,14 +38,15 @@ struct Location* InitLocationsInBase(struct Location *locations)
 }
 
 /*Now for the action part!-----------------------------------------------------------------------------------------------------------------------------------------*/
-void InTheBase(int startLoc, struct MainHero hero)
+struct MainHero InTheBase(int startLoc, struct MainHero hero)
 {
-    struct Location *locations;
-    locations = calloc(locsCountBase, sizeof(struct Location));
-    locations = InitLocationsInBase(locations);
+    struct Location *locationsInBase;
+    locationsInBase = calloc(locsCountBase, sizeof(struct Location));
+    locationsInBase = InitLocationsInBase(locationsInBase);
     int currLocation = startLoc;
     int inSwitchCurrLoc = startLoc;
     printf("I'm here!\n");
+    ShowDestinations(locationsInBase, currLocation);
     /*while(1)
     {
       switch (currLocation)
@@ -64,14 +67,69 @@ void InTheBase(int startLoc, struct MainHero hero)
         break;
       }
     }*/
+    return hero;
 }
 
-int EnterFromTheShore(struct MainHero hero)
+struct MainHero EnterFromTheShore(struct MainHero hero)
 {
-  InTheBase(1, hero);
+  printf("Вы вошли в грот и начали его внимательно осматривать. ...\n");
+  printf("Как будете открывать дверь?\n");
+  printf("0: Разрезать дверь с помощью винтовки\n");
+  printf("1: Взорвать дверь гранатой\n");
+  printf("2: Вернуться к пляжу\n");
+  ShowAmmo(hero);
+  int inFlag = 0;
+  while(inFlag != 1)
+  {
+    int desidion;
+    scanf("%d", &desidion);
+    switch (desidion)
+    {
+      case 0:
+        if(hero.rifleShots < 3)
+        {
+          printf("Вы вспомнили количество зарядов в своей винтовке и поняли, что вам скорее всего их не хватит на уничтожение двери.\n");
+          printf("Нужно придумать что-то ещё.\n");
+        }
+        else
+        {
+          printf("Лазерной винтовкой вы проделали подохдящую для вас дыру, и вошли внутрь.\n");
+          hero.rifleShots = hero.rifleShots - 3;
+          hero = InTheBase(1, hero);
+          inFlag++;
+        };
+      break;
+
+      case 1:
+        if(hero.grenades < 1)
+        {
+          printf("Вы порылись в поясе и поняли, что гранат у вас больше не осталось. Нужно придумать что-то ещё.\n");
+        }
+        else
+        {
+          hero.grenades--;
+          printf("От взрыва дверь с грохотом упала на пол, и теперь проход перед вами стал открыт.\n");
+          hero = InTheBase(1, hero);
+          inFlag++;
+        };
+      break;
+
+      case 2:
+        printf("Вы решили пока вернуться назад к флаеру\n");
+        inFlag++;
+      break;
+
+      default:
+        printf("Ещё раз...\n");
+      break;
+    }
+    return hero;
+  }
 }
 
-int EnterFromTheMounts(struct MainHero hero)
+
+struct MainHero  EnterFromTheMounts(struct MainHero hero)
 {
-  InTheBase(0, hero);
+  printf("Got here!\n");
+  hero = InTheBase(0, hero);
 }

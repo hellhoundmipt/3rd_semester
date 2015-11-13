@@ -27,9 +27,9 @@ struct MainHero CaptureBorzukhan(struct MainHero hero)
       break;
 
       case 1:
-        if(hero.greandes > 0)
+        if(hero.grenades > 0)
         {
-          hero.greandes--;
+          hero.grenades--;
           hero.flag[4] = 1;
           hero.flag[0] = 3;
           printf("Вы подкрались к одну, достали гранату и заброслил её внутрь. Через бесконечно длинные 3 секунды внутри послышался гулкий хлопок.\n");

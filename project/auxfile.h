@@ -14,9 +14,9 @@ struct Location
 struct MainHero
 {
   char name[20];
-  int flag[5];
+  int flag[7];
   int rifleShots;
-  int greandes;
+  int grenades;
   int health;
 };
 
@@ -28,6 +28,8 @@ Some details:
   hero.flag[2] - hero has already been to the lawn
   hero.flag[3] - hero has a stunner
   hero.flag[4] - hero has already captured Borzukhan
+  hero.flag[5] - hero demolished door near the beach
+  hero.flag[6] - hero killed everybodyat the enterance
 */
 
 /*Messages------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -50,8 +52,8 @@ void ShowAmmo(struct MainHero hero)
       else
         printf("зарядов ");
     }
-  printf("в лазерной винтовке, %d ", hero.greandes);
-  switch (hero.greandes)
+  printf("в лазерной винтовке, %d ", hero.grenades);
+  switch (hero.grenades)
   {
     case 2:
       printf("гранаты, ");
@@ -90,7 +92,7 @@ void ShowKnowledge(struct MainHero hero)
   if(hero.flag[0] == 3)
     printf("\t\tБорзухан мёртв.\n");
   if(hero.flag[1] == 1)
-    printf("\t\tВы знаете про секретный пароль в пещере у моря.\n");
+    printf("\t\tВы знаете про секретный вход в пещере у моря.\n");
   if(hero.flag[3] == 1)
     printf("\t\tУ вас есть станнер.\n");
 }
@@ -117,14 +119,14 @@ int ChangeLoc(struct Location *locations, int currLocation)
   }
 }
 
-int FireRifle(int avgDamage, int neighbourhood)
+int FireRifle(int avgShots, int neighbourhood)
 {
   int res;
   long int seedval = time(NULL);
   struct drand48_data *buffer = calloc(1, sizeof(struct drand48_data));
   srand48_r(seedval, buffer);
   drand48_r(buffer, &res);
-  res = res / (RAND_MAX / neighbourhood) + avgDamage;
+  res = res / (RAND_MAX / neighbourhood) + avgShots;
   return res;
 }
 
@@ -132,13 +134,12 @@ int FireRifle(int avgDamage, int neighbourhood)
 struct MainHero InitHero(struct MainHero hero)
 {
     int i = 0;
-    for(i; i <= 5; i++)
+    for(i; i <= 6; i++)
     {
       hero.flag[i] = 0;
     }
-    hero.flag[1] = 1;
     hero.rifleShots = 10;
-    hero.greandes = 2;
+    hero.grenades = 2;
     hero.health = 3;
     return hero;
 }

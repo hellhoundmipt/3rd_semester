@@ -54,9 +54,37 @@ void GameLoop(struct MainHero hero)
       break;
 
       case 2:
-        printf("Some soldiers at the enterance. Heavy weapons and armor, no reason to have some chat with them.\n");
-        ShowDestinations(locations, currLocation);
-        printf("Where would you like to go?\n");
+        if(hero.flag[6] == 0)
+        {
+          printf("Прилетели ко входу, чё делать будем?\n");
+          int desidion;
+          int inFlag = 0;
+          while(inFlag == 0)
+          {
+            printf(" Будете ли сейчас заходить? (0 do/1 do not)\n");
+            scanf("%d", &desidion);
+            if(desidion == 0)
+            {
+              hero = InTheBase(0, hero);
+              inFlag = 1;
+            }
+            else
+            {
+              if(desidion == 1)
+              {
+                printf("Вы решили пока не входить в базу.\n");
+                inFlag = 1;
+              }
+              else
+                printf("Так не выйдет...\n");
+            }
+          };
+        }
+        else
+        {
+          hero = EnterFromTheMounts(hero);
+        }
+        ShowDestinations(locations, currLocation);\
         inSwitchCurrLoc = ChangeLoc(locations, currLocation);
       break;
 
@@ -74,12 +102,20 @@ void GameLoop(struct MainHero hero)
           int inFlag = 0;
           while(inFlag == 0)
           {
-            printf(" Будете ли искать вход сейчас? (0 do/1 do not)\n");
+            if(hero.flag[5] == 0)
+              printf(" Будете ли искать вход сейчас? (0 do/1 do not)\n");
+            else
+              printf(" Будете ли заходить на базу сейчас? (0 do/1 do not)\n");
             scanf("%d", &desidion);
             if(desidion == 0)
             {
-              printf("Let's come in!\n");
-              EnterFromTheShore(hero);
+              if(hero.flag[5] == 0)
+              {
+                hero.flag[5]++;
+                hero = EnterFromTheShore(hero);
+              }
+              else
+                hero = InTheBase(1, hero);
               inFlag = 1;
             }
             else
@@ -128,7 +164,8 @@ int main()
   while (getchar() != '\n');
   printf("Enjoy!\n");
   sleep(1);
-  Briefing(hero.name);
+  //Briefing(hero.name);
   GameLoop(hero);
   printf("Thanks for playing!\n");
+  return 0;
 }
