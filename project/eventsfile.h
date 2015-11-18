@@ -28,9 +28,8 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
       int inFlag = 0;
       while(inFlag != 1)
       {
-        int decidion;
-        scanf("%d", &decidion);
-        switch (decidion)
+        int decision = TakeDecision();
+        switch (decision)
         {
           case 3:
             inFlag = 1;
@@ -64,10 +63,7 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
             else
             {
               printf("В самый разгар стрельбы у вас кончились заряды. Выжившие пеленеги быстро сориентировались в сложившейся ситуации...\n");
-              sleep(1);
-              printf("На вас пысался град выстрелов, в конце концов один из пеленегов попал вам в голову, на чём ваши страдания закончились\n");
-              printf("Game over!\n");
-              exit (0);
+              GameOver();
             }
             break;
 
@@ -113,9 +109,8 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
       int inFlag = 0;
       while(inFlag != 1)
       {
-        int decidion;
-        scanf("%d", &decidion);
-        switch (decidion)
+        int decision = TakeDecision();
+        switch (decision)
         {
           case 2:
             printf("Вы решили не связыываться с подозрительными личностями, развернули флаер и отправились к лагерю\n");
@@ -150,10 +145,7 @@ struct MainHero DealWithPelenegs(struct MainHero hero)
             else
             {
               printf("В самый разгар стрельбы у вас кончились заряды. Выжившие пеленеги быстро сориентировались в сложившейся ситуации...\n");
-              sleep(1);
-              printf("На вас пысался град выстрелов, в конце концов один из пеленегов попал вам в голову, на чём ваши страдания закончились\n");
-              printf("Game over!\n");
-              exit (0);
+              GameOver();
             }
             break;
 
@@ -186,23 +178,22 @@ struct MainHero IncidentOnTheLawn(struct MainHero hero)
 {
   printf("Вы полетели к поляне и увидели группу существ, собрашихся у костра. ");
   printf("Издали вы не можете различить, кто именно перед вами, и чем они занимаются.\n");
-  ShowAmmo(hero);
-  printf("0: Подлететь поближе к костру и открыть огонь из лазерной винтовки\n");
-  printf("1: Подлететь поближе и швырнуть гранату\n");
-  printf("2: Развернуться и улететь\n");
-  printf("3: Незаметно сесть поодаль от костра\n");
-  printf("4: Посадить флаер у костра\n");
-  int flag = 0;
-  int decidion;
+  int decision, flag = 0;
   while(flag != 1)
   {
-    scanf("%d", &decidion);
-    if((decidion == 0) || (decidion == 1) || (decidion == 2) || (decidion == 3) || (decidion == 4))
+    ShowAmmo(hero);
+    printf("0: Подлететь поближе к костру и открыть огонь из лазерной винтовки\n");
+    printf("1: Подлететь поближе и швырнуть гранату\n");
+    printf("2: Развернуться и улететь\n");
+    printf("3: Незаметно сесть поодаль от костра\n");
+    printf("4: Посадить флаер у костра\n");
+    decision = TakeDecision();
+    if((decision == 0) || (decision == 1) || (decision == 2) || (decision == 3) || (decision == 4))
       flag = 1;
     else
       printf("Так не получится...\n");
   }
-  switch (decidion)
+  switch (decision)
   {
     case 0:
       printf("Подлетев поближе к костру, вы лихо высунулись из кабины и начали палить по существам, оказавшихся пеленегами.\n");
@@ -217,11 +208,9 @@ struct MainHero IncidentOnTheLawn(struct MainHero hero)
       else
       {
         printf("В самый разгар стрельбы у вас кончились заряды. Выжившие пеленеги быстро сориентировались в сложившейся ситуации...\n");
-        sleep(1);
         printf("Ваш флаер с грохотом упал на землю, расстреленный из лазерных винтовок лякушей.\n");
         printf("Вы так и не смогли вылезти из горящего флаера. Один из пеленегов подошёл выстрелил вам в голову, на чём ваши страдания закончились\n");
-        printf("Game over!\n");
-        exit (0);
+        GameOver();
       }
     break;
 
@@ -260,10 +249,7 @@ struct MainHero IncidentOnTheLawn(struct MainHero hero)
       printf("Вы приземлили свой флаер около костра, вышли и направились к существам.");
       printf("Это были вооружёные до зубов пеленеги, которые до вашего прибытия активно обсуждали свою недавнюю вылазку.\n");
       printf("Едва завидев вас, они вскочили со своих мест и изрешетили вас из своих лазерных винтовок\n");
-      sleep(1);
-      printf("Game over!\n");
-      exit(0);
-    break;
+      GameOver();
   }
 }
 
@@ -283,9 +269,8 @@ void Briefing(char *yourName)
     printf("1: Как мне найти базу Борзухана?\n");
     printf("2: Почему вы не обнаружили базу сами?\n");
     printf("3: Каким образом я смогу уничтожить базу?\n");
-    int decidion;
-    scanf("%d", &decidion);
-    switch (decidion)
+    int decision = TakeDecision();
+    switch (decision)
     {
       case 0:
         printf("Отлично! Но перед тем как вы уйдете, вы должны получить ваше снаряжение. Ведь не собираетесь же вы идти бороться\n");

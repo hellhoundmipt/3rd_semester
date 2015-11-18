@@ -19,13 +19,12 @@ void GameLoop(struct MainHero hero)
   int inSwitchCurrLoc = 0;
 
   int exitFlag = 0;
-  printf("Currloc = %s\n", locations[currLocation].name);
   while(exitFlag != 1)
   {
     switch(currLocation)
     {
       case 0:
-        printf("Вы сидите в лёгком флаере и думаете, куда полететь.\n");
+        printf("\nВы сидите в лёгком флаере и думаете, куда полететь.\n");
         ShowAmmo(hero);
         ShowKnowledge(hero);
         ShowDestinations(locations, currLocation);
@@ -54,23 +53,23 @@ void GameLoop(struct MainHero hero)
       break;
 
       case 2:
-        if(hero.flag[6] == 0)
+        if(hero.flag[6] == 1)
         {
           printf("Прилетели ко входу, чё делать будем?\n");
-          int desidion;
+          int decision;
           int inFlag = 0;
           while(inFlag == 0)
           {
-            printf(" Будете ли сейчас заходить? (0 do/1 do not)\n");
-            scanf("%d", &desidion);
-            if(desidion == 0)
+            printf("Будете ли сейчас заходить? (0 да/1 нет)\n");
+            scanf("%d", &decision);
+            if(decision == 0)
             {
               hero = InTheBase(0, hero);
               inFlag = 1;
             }
             else
             {
-              if(desidion == 1)
+              if(decision == 1)
               {
                 printf("Вы решили пока не входить в базу.\n");
                 inFlag = 1;
@@ -84,7 +83,7 @@ void GameLoop(struct MainHero hero)
         {
           hero = EnterFromTheMounts(hero);
         }
-        ShowDestinations(locations, currLocation);\
+        ShowDestinations(locations, currLocation);
         inSwitchCurrLoc = ChangeLoc(locations, currLocation);
       break;
 
@@ -98,16 +97,16 @@ void GameLoop(struct MainHero hero)
         {
           printf("Вы приземлились около песчаного пляжа, вышли из флаера и осмотрелись. Вдали виднеется грот, в котором,\n");
           printf("как вы знаете, находится вход на базу Борзухана.");
-          int desidion;
+          int decision;
           int inFlag = 0;
           while(inFlag == 0)
           {
             if(hero.flag[5] == 0)
-              printf(" Будете ли искать вход сейчас? (0 do/1 do not)\n");
+              printf(" Будете ли искать вход сейчас? (0 да/1 нет)\n");
             else
-              printf(" Будете ли заходить на базу сейчас? (0 do/1 do not)\n");
-            scanf("%d", &desidion);
-            if(desidion == 0)
+              printf(" Будете ли заходить на базу сейчас? (0 да/1 нет)\n");
+            scanf("%d", &decision);
+            if(decision == 0)
             {
               if(hero.flag[5] == 0)
               {
@@ -120,7 +119,7 @@ void GameLoop(struct MainHero hero)
             }
             else
             {
-              if(desidion == 1)
+              if(decision == 1)
               {
                 printf("Вы решили пока не входить в грот.\n");
                 inFlag = 1;

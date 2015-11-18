@@ -17,9 +17,8 @@ struct MainHero CaptureBorzukhan(struct MainHero hero)
     printf("2: Подкрасться к домику и осторожно заглянуть в окно\n");
     printf("3: Подойти к двери и вежливо постучать\n");
     printf("4: Вышибить дверь ногой и ворваться в домик с оружием наизготовку\n");
-    int decidion;
-    scanf("%d", &decidion);
-    switch (decidion)
+    int decision = TakeDecision();
+    switch (decision)
     {
       case 0:
         printf("Вы решили пока не связываться с Борзуханом лично, поэтому развернулись и улетели к лагерю.\n");
@@ -71,12 +70,11 @@ struct MainHero CaptureBorzukhan(struct MainHero hero)
     printf("вы узнали лякушу Борзухана. Похоже, он вас не замечает.\n");
     printf("0: Расстрепять Борзухана из лазерной винтовки\n");
     printf("1: Выстрелить через окно из станнера\n");
-    printf("2: Осторожно отойти от домика и вернуться в лагерь");
-    int decidion;
+    printf("2: Осторожно отойти от домика и вернуться в лагерь\n");
     while(1)
     {
-      scanf("%d", &decidion);
-      switch (decidion)
+      int decision = TakeDecision();
+      switch (decision)
       {
         case 0:
           if(hero.rifleShots > 0)
@@ -131,9 +129,8 @@ struct MainHero CaptureBorzukhan(struct MainHero hero)
     printf("0: -Я ищу лякушу Борзухана!\n");
     printf("1: -Лесник я, хочу с вами поговорить\n");
     printf("2: -Да тут мимо проходил, дай, думаю, зайду!\n");
-    int decidion;
-    scanf("%d", &decidion);
-    switch (decidion)
+    int decision = TakeDecision();
+    switch (decision)
     {
       case 0:
         printf("Деверь открылась, в проходе стоял грозный пеленег с бластером в руках.\n");
@@ -155,9 +152,7 @@ struct MainHero CaptureBorzukhan(struct MainHero hero)
         printf("-Не люблю молчаливых. -ухмыльнулся он и выстрелил вам в голову.\n");
       break;
     }
-    sleep(1);
-    printf("Game over!\n");
-    exit(0);
+    GameOver();
   }
   if(choice == 2)
   {
@@ -167,9 +162,8 @@ struct MainHero CaptureBorzukhan(struct MainHero hero)
     if(hero.flag[3] == 1)
       printf("1: Оглушить лякугшу Борзухана выстрелом из станнера\n");
 
-    int decidion;
-    scanf("%d", &decidion);
-    switch (decidion)
+    int decision = TakeDecision();
+    switch (decision)
     {
       case 0:
         if(hero.rifleShots > 0)
@@ -186,9 +180,7 @@ struct MainHero CaptureBorzukhan(struct MainHero hero)
         else
         {
           printf("Пока вы пытались выстрелить из разряженной винтовки, Борзухан схватил свою и пристрелил вас.\n");
-          sleep(1);
-          printf("Game over!\n");
-          exit(0);
+          GameOver();
         }
       break;
 
@@ -207,17 +199,13 @@ struct MainHero CaptureBorzukhan(struct MainHero hero)
         else
         {
           printf("Пока вы стояли и раздумывали о смысле жизни, Борзухан схватил свою винтовку и пристрелил вас.\n");
-          sleep(1);
-          printf("Game over!\n");
-          exit(0);
+          GameOver();
         }
       break;
 
       default:
         printf("Пока вы стояли и раздумывали о смысле жизни, Борзухан схватил свою винтовку и пристрелил вас.\n");
-        sleep(1);
-        printf("Game over!\n");
-        exit(0);
+        GameOver();
       break;
     }
     return hero;

@@ -14,7 +14,7 @@ struct Location
 struct MainHero
 {
   char name[20];
-  int flag[7];
+  int flag[8];
   int rifleShots;
   int grenades;
   int health;
@@ -29,7 +29,8 @@ Some details:
   hero.flag[3] - hero has a stunner
   hero.flag[4] - hero has already captured Borzukhan
   hero.flag[5] - hero demolished door near the beach
-  hero.flag[6] - hero killed everybodyat the enterance
+  hero.flag[6] - hero killed everybody at the enterance
+  hero.flag[7] - hero killed everybody in the canteen
 */
 
 /*Messages------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -99,12 +100,22 @@ void ShowKnowledge(struct MainHero hero)
 
 /*Other---------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+int TakeDecision()
+{
+  int decision = -1;
+  char aux[1];
+  scanf("%1s", aux);
+  while (getchar() != '\n');
+  sscanf(aux, "%d", &decision);
+  return decision;
+}
+
 int ChangeLoc(struct Location *locations, int currLocation)
 {
   int destination;
   while(1)
   {
-    scanf("%d", &destination);
+    destination = TakeDecision();
     int i = 0;
     for(i; i < locations[currLocation].incidentLocsCount; i++)
     {
@@ -130,11 +141,36 @@ int FireRifle(int avgShots, int neighbourhood)
   return res;
 }
 
+void GameOver()
+{
+  sleep(1);
+  int res = FireRifle(2, 5);      //здесь тож ранйдомайзер тащит
+  switch (res)
+  {
+    case 0:
+    printf("Печаль-беда\n");
+    break;
+
+    case 1:
+      printf("Вот и сказки худой конец...\n");
+    break;
+
+    case 2:
+      printf("Такие дела...\n");
+    break;
+
+    default:
+      printf("Game over!\n");
+    break;
+  }
+  exit(0);
+}
+
 /*Initialize----------------------------------------------------------------------------------------------------------------------------------------------------*/
 struct MainHero InitHero(struct MainHero hero)
 {
     int i = 0;
-    for(i; i <= 6; i++)
+    for(i; i <= 7; i++)
     {
       hero.flag[i] = 0;
     }
