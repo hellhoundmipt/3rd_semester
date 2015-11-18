@@ -163,7 +163,7 @@ int main()
   while (getchar() != '\n');
   printf("Enjoy!\n");
   sleep(1);
-  //Briefing(hero.name);
+  Briefing(hero.name);
   GameLoop(hero);
   printf("Thanks for playing!\n");
   return 0;
