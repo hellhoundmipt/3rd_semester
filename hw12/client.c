@@ -7,6 +7,8 @@
 #include "stdlib.h"
 #include "auxfile.h"
 
+const char confirmationLetter[] = "Name is free, connection accepted";
+
 struct Data
 {
   int socketDesc;
@@ -46,9 +48,13 @@ int main()
   }
   else
   {
-    printf("Access denied: server full\n");
+    printf("Access denied: server full or name if unaviliable\n");
     exit(0);
   }
+  printf("Instructions:\n");
+  printf("\tpress :q to quit the chat\n");
+  printf("\tpress :n to show people offline\n");
+  printf("\trespect chicken because she has lost control again...\n");
 
   pthread_t threadIds[2];
   pthread_create(&threadIds[0], 0, SenderFunc, &data);
@@ -64,7 +70,6 @@ void *SenderFunc(void *args)
   struct Data data = *(struct Data *)args;
   while(1)
   {
-    //printf("Sender\n");
     char message[messageLength];
     gets(message);
     write(data.socketDesc, message, strlen(message) + 1);
@@ -82,7 +87,6 @@ void *RecieverFunc(void *args)
   struct Data data = *(struct Data *)args;
   while(1)
   {
-    //printf("Reciever\n");
     char message[messageLength];
     read(data.socketDesc, message, sizeof(message));
     printf("%s\n", message);
